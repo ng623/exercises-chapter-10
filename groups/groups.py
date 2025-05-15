@@ -64,9 +64,12 @@ class Group(ABC):
         pass
 
     @log_call
-    @abstractmethod
     def _validate(self, value):
         """Ensure that value is a legitimate element value in this group."""
+        return self._validate_impl(value)
+
+    @abstractmethod
+    def _validate_impl(self, value):
         pass
 
     @abstractmethod
@@ -92,7 +95,7 @@ class CyclicGroup(Group):
 
     symbol = "C"
 
-    def _validate(self, value):
+    def _validate_impl(self, value):
         """Ensure that value is a legitimate element value in this group."""
         if not (isinstance(value, Integral) and 0 <= value < self.n):
             raise ValueError("Element value must be an integer"
@@ -111,7 +114,7 @@ class GeneralLinearGroup(Group):
 
     symbol = "G"
 
-    def _validate(self, value):
+    def _validate_impl(self, value):
         """Ensure that value is a legitimate element value in this group."""
         value = np.asarray(value)
         if not (value.shape == (self.n, self.n)):
